@@ -1,23 +1,18 @@
-FROM ubuntu:xenial
+FROM ubuntu:bionic
 MAINTAINER Lars Kellogg-Stedman <lars@oddbit.com>
 
 ENV SQUEEZE_VOL /srv/squeezebox
 ENV LANG C.UTF-8
 ENV DEBIAN_FRONTEND noninteractive
-ENV PACKAGE_VERSION_URL=http://www.mysqueezebox.com/update/?version=7.9.0&revision=1&geturl=1&os=deb
+ENV MEDIASERVER_URL=http://downloads-origin.slimdevices.com/nightly/7.9/sc/acac84f6747e927149c62b198403ac47a9df3f58/logitechmediaserver_7.9.2~1533559127_amd64.deb
+ENV FFMPEG_URL=https://johnvansickle.com/ffmpeg/builds/ffmpeg-git-64bit-static.tar.xz
 
 RUN apt-get update && \
-	apt-get -y install curl wget faad flac lame sox libio-socket-ssl-perl && \
-	apt-get clean
-
-RUN url=$(curl "$PACKAGE_VERSION_URL" | sed 's/_all\.deb/_amd64\.deb/') && \
-	curl -Lsf -o /tmp/logitechmediaserver.deb $url && \
+	apt-get -y --force-yes install curl wget faad flac lame sox libio-socket-ssl-perl ffmpeg && \
+	curl -Lsf -o /tmp/logitechmediaserver.deb $MEDIASERVER_URL && \
 	dpkg -i /tmp/logitechmediaserver.deb && \
 	rm -f /tmp/logitechmediaserver.deb && \
 	apt-get clean
-
-# This will be created by the entrypoint script.
-RUN userdel squeezeboxserver
 
 VOLUME $SQUEEZE_VOL
 EXPOSE 3483 3483/udp 9000 9090
