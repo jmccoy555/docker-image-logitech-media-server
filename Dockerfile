@@ -1,4 +1,4 @@
-FROM ubuntu:bionic
+FROM debian:stretch-slim
 MAINTAINER Lars Kellogg-Stedman <lars@oddbit.com>
 
 ENV SQUEEZE_VOL /srv/squeezebox
